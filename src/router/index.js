@@ -15,15 +15,6 @@ const routes = [
             Footer: () => import('@/layout/TheFooter.vue'),
         },
     },
-    {
-        path: '/login',
-        name: 'login',
-        components: {
-            default: () => import('@/views/login/TheIndex.vue'),
-            Navigation: () => import('@/layout/TheNavbar.vue'),
-            Footer: () => import('@/layout/TheFooter.vue'),
-        },
-    },
 ];
 
 const router = new VueRouter({

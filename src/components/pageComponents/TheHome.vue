@@ -1,141 +1,177 @@
 <template>
-  <div>
-    <v-carousel>
-      <v-carousel-item
-        v-for="(item, i) in carousels"
-        :key="i"
-        :src="item.src"
-        reverse-transition="fade-transition"
-        transition="fade-transition"
-      ></v-carousel-item>
-    </v-carousel>
-    <div class="mt-4">
-      <v-container fluid
-        ><v-row no-gutters>
-          <v-col class="pr-2" v-for="card in cards" :key="card.id" md="3"
-            ><BaseCard
-              :title="card.title"
-              :image="card.image"
-              :imageText="card.imageText"
-              :description="card.description"
-              :buttonText="card.buttonText"
-            ></BaseCard
-          ></v-col> </v-row
-      ></v-container>
+  <v-container fluid>
+    <div class="text-center">
+      <v-dialog transition="dialog-bottom-transition" max-width="400">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="primary" v-bind="attrs" v-on="on">Add</v-btn>
+        </template>
+        <template v-slot:default="dialog">
+          <v-card>
+            <v-container fluid
+              > <v-card-text v-if="error" class="red--text font-weight-medium text-center" >enter field</v-card-text>
+             
+              
+              <v-form v-model="valid">
+                <v-text-field
+                  v-model="title"
+                  label="Title"
+                  required
+                ></v-text-field>
+                <v-text-field
+                  v-model="describe"
+                  label="Describe"
+                  required
+                ></v-text-field> </v-form
+            ></v-container>
+            <v-card-actions class="justify-end">
+              <v-btn text @click="addData">Add</v-btn>
+              <v-btn text @click="dialog.value = false">Close</v-btn>
+            </v-card-actions>
+          </v-card>
+        </template>
+      </v-dialog>
     </div>
-    <div class="mt-4">
-      <v-row
-        ><v-col md="6"
-          ><LineChart
-            :width="900"
-            :height="400"
-            :chart-data="chart03Data"
-            :chart-options="chartOptions"
-        /></v-col>
-        <v-col md="6"
-          ><div>
-            <p class="font-weight-medium">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-          </div></v-col
-        ></v-row
-      >
-    </div>
-    <div class="mt-8">
-    <v-container >
-        <v-row justify="center">
-    <v-expansion-panels inset>
-      <v-expansion-panel
-        v-for="(item,i) in 5"
-        :key="i"
-      >
-        <v-expansion-panel-header>Item</v-expansion-panel-header>
-        <v-expansion-panel-content>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
-  </v-row>
-    </v-container></div>
-  </div>
+    <v-simple-table>
+      <template v-slot:default>
+        <thead>
+          <tr>
+            <th class="text-left">Id</th>
+            <th class="text-left">Title</th>
+            <th class="text-left">Describe</th>
+            <th class="text-left">Delete</th>
+            <th class="text-left">Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in desserts" :key="item.name">
+            <td>{{ item.id }}</td>
+            <td>{{ item.title }}</td>
+            <td>{{ item.describe }}</td>
+            <td>
+              <v-btn depressed @click="deleteTitle(item.id)" color="error">
+                Delete
+              </v-btn>
+            </td>
+            <td>
+              <div class="text-left">
+                <v-dialog v-model="dialog" width="500">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      color="success darken-2"
+                      dark
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      Edit
+                    </v-btn>
+                  </template>
+
+                  <v-card>
+                    <v-container fluid
+                      ><v-form>
+                        <v-text-field
+                          v-model="editTitle"
+                          label="Title"
+                          required
+                        ></v-text-field>
+                        <v-text-field
+                          v-model="editDescribe"
+                          label="Describe"
+                          required
+                        ></v-text-field> </v-form
+                    ></v-container>
+
+                    <v-divider></v-divider>
+
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="success darken-2" @click="editData(item.id)">
+                        Edit
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </template>
+    </v-simple-table>
+  </v-container>
 </template>
 
 <script>
-import BaseCard from "@/components/elements/baseCard.vue";
-import LineChart from "@/components/elements/charts/lineChart.vue";
+import axios from "axios";
 export default {
   data() {
     return {
-      carousels: [
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg",
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/sky.jpg",
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/bird.jpg",
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg",
-        },
-      ],
-      cards: [
-        {
-          image: "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg",
-          imageText: "text",
-          title: "this is a title",
-          description: "this is a description",
-          buttonText: "click me",
-          id: "1",
-        },
-        {
-          image: "https://cdn.vuetifyjs.com/images/carousel/sky.jpg",
-          imageText: "text",
-          title: "this is a title",
-          description: "this is a description",
-          buttonText: "click me",
-          id: "2",
-        },
-        {
-          image: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg",
-          imageText: "text",
-          title: "this is a title",
-          description: "this is a description",
-          buttonText: "click me",
-          id: "3",
-        },
-        {
-          image: "https://cdn.vuetifyjs.com/images/carousel/bird.jpg",
-          imageText: "text",
-          title: "this is a title",
-          description: "this is a description",
-          buttonText: "click me",
-          id: "3",
-        },
-      ],
+      desserts: [],
+      dialog: false,
+      title: "",
+      describe: "",
+      editTitle:'',
+      editDescribe:'',
+      error: false,
+
     };
   },
-  components: { BaseCard, LineChart },
+  methods: {
+    addData() {
+      const formData = new FormData();
+      formData.append("title", this.title);
+      formData.append("describe", this.describe);
+      axios
+        .post("http://localhost:8000/task/", formData, {})
+        .then((res) => {
+          console.log(res);
+          this.error = false
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err);
+          if(err){
+            this.error = true
+
+          }
+        });
+    },
+     editData(row) {
+      const editData = new FormData();
+      editData.append("title", this.editTitle);
+      editData.append("describe", this.editDescribe);
+      axios
+        .patch(`http://localhost:8000/task/${row}/`, editData, {})
+        .then((res) => {
+          console.log(res);
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    deleteTitle(id) {
+      axios
+        .delete(`http://localhost:8000/task/` + id, {})
+        .then((res) => {
+          console.log(res);
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    
+  },
+  created() {
+    axios
+      .get(`http://localhost:8000/task/`, {})
+      .then((response) => {
+        console.log(response.data);
+        this.desserts = response.data;
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  },
 };
 </script>
