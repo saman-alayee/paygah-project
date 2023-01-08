@@ -35,7 +35,7 @@
       <template v-slot:default>
         <thead>
           <tr>
-            <th class="text-left">Id</th>
+            <th class="text-left">ID</th>
             <th class="text-left">Title</th>
             <th class="text-left">Describe</th>
             <th class="text-left">Delete</th>
